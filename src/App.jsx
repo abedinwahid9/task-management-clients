@@ -1,14 +1,21 @@
+import { Outlet } from "react-router-dom";
 import "./App.css";
-import Login from "./Pages/Login/Login";
-import NavbarCompoents from "./components/Navbar/NavbarCompoents";
+import bg from "../src/assets/bg.png";
 
-// #DAD4D4 for text
+import NavbarCompoents from "./components/Navbar/NavbarCompoents";
 
 function App() {
   return (
-    <div>
-      <NavbarCompoents></NavbarCompoents>
-      <h2>hello world</h2>
+    <div
+      className="min-h-screen bg-no-repeat  bg-center bg-cover pt-5"
+      style={{ backgroundImage: `url(${bg})` }}
+    >
+      <div className="min-h-screen  bg-[#0000006b]">
+        <div className="container mx-auto">
+          <NavbarCompoents></NavbarCompoents>
+          <Outlet></Outlet>
+        </div>
+      </div>
     </div>
   );
 }
