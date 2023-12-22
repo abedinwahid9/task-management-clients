@@ -12,24 +12,38 @@ import {
   Textarea,
 } from "@material-tailwind/react";
 import { useForm, Controller } from "react-hook-form";
+import { useQuery } from "@tanstack/react-query";
+import useAxiosPublic from "../PublicAxios/useAxiosPublic";
+import Swal from "sweetalert2";
+// import useAxiosPublic from "../PublicAxios/useAxiosPublic";
 
-const UpdateCard = () => {
-  const { control, register, handleSubmit } = useForm();
+const UpdateCard = ({ task, refetch }) => {
+  const { control, register, handleSubmit, reset } = useForm();
   const [open, setOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedPriority, setSelectedPriority] = useState(null);
+  const axiosPublic = useAxiosPublic();
 
   const handleOpen = () => setOpen(!open);
 
-  const onSubmit = (data) => {
-    console.log({
+  const { _id, title, descriptions, priority, status, deadlines } = task;
+
+  const onSubmit = async (data) => {
+    const updateTask = {
       ...data,
       deadlines: selectedDate.toLocaleDateString("en-GB"),
       priority: selectedPriority,
-    });
-    setOpen(false);
-  };
+    };
 
+    axiosPublic.put(`/tasks/update/${_id}`, { ...updateTask }).then((data) => {
+      if (data.data.acknowledged) {
+        refetch();
+        setOpen(false);
+        reset();
+        Swal.fire("Task update success ");
+      }
+    });
+  };
   return (
     <div>
       <Button className="text-sm bg-secondColor" onClick={handleOpen}>
@@ -71,10 +85,19 @@ const UpdateCard = () => {
             className="mt-8 mb-2 w-3/4 mx-auto"
           >
             <div className="mb-1 flex flex-col gap-5">
-              <Input {...register("title")} label="Title" />
-              <Textarea {...register("descriptions")} label="Descriptions" />
+              <Input
+                defaultValue={title}
+                {...register("title")}
+                label="Title"
+              />
+              <Textarea
+                defaultValue={descriptions}
+                {...register("descriptions")}
+                label="Descriptions"
+              />
               <div className="flex gap-3 mb-4">
                 <DatePicker
+                  defaultValue={deadlines}
                   selected={selectedDate}
                   onChange={(e) => setSelectedDate(e)}
                   dateFormat="dd-MM-yyyy"
@@ -82,6 +105,7 @@ const UpdateCard = () => {
                   placeholderText="Select Date"
                 />
                 <Select
+                  value={priority}
                   {...register("priority")}
                   label="Priority"
                   onChange={(e) => setSelectedPriority(e.toLowerCase())}
@@ -99,7 +123,7 @@ const UpdateCard = () => {
               className="bg-secondColor"
               color="green"
             >
-              <span>Add task</span>
+              <span>update task</span>
             </Button>
           </form>
         </DialogBody>

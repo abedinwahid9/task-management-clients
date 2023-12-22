@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Navbar,
   Collapse,
@@ -19,8 +19,9 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { NavLink } from "react-router-dom";
-
+import { AuthProvider } from "../../AuthContext/AuthContext";
 function NavList() {
+  const { user } = useContext(AuthProvider);
   return (
     <ul className="my-2  flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
       <NavLink
@@ -32,17 +33,19 @@ function NavList() {
           Home
         </Typography>
       </NavLink>{" "}
-      <NavLink
-        to="/login"
-        className="flex items-center text-base text-white hover:text-blue-500 transition-colors"
-      >
-        <Typography as="li" variant="small" className="p-1 font-medium">
-          Login
-        </Typography>{" "}
-      </NavLink>
+      {!user && (
+        <NavLink
+          to="/login"
+          className="flex items-center text-base text-white hover:text-blue-500 transition-colors"
+        >
+          <Typography as="li" variant="small" className="p-1 font-medium">
+            Login
+          </Typography>{" "}
+        </NavLink>
+      )}
       <Typography as="li" variant="small" className="p-1 font-medium">
         <NavLink
-          href="#"
+          to="/contactus"
           className="flex items-center text-base text-white hover:text-blue-500 transition-colors"
         >
           Contact Us
@@ -67,8 +70,23 @@ const profileMenuItems = [
 
 function ProfileMenu() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const { user, signOutUser } = useContext(AuthProvider);
+  const isAbsoluteUrl = (url) => /^[a-z][a-z0-9+.-]*:/.test(url);
+  const checkProfileImg = isAbsoluteUrl(user?.photoURL);
 
   const closeMenu = () => setIsMenuOpen(false);
+
+  const handleSignOut = () => {
+    signOutUser()
+      .then(() => {
+        // Additional logic after sign out (if needed)
+        console.log("User signed out successfully");
+      })
+      .catch((error) => {
+        // Handle sign-out errors
+        console.error("Error signing out", error);
+      });
+  };
 
   return (
     <Menu open={isMenuOpen} handler={setIsMenuOpen} placement="bottom-end">
@@ -83,7 +101,11 @@ function ProfileMenu() {
             size="sm"
             alt="tania andrew"
             className="border border-gray-900 p-0.5"
-            src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80"
+            src={
+              checkProfileImg
+                ? user.photoURL
+                : `https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80`
+            }
           />
           <ChevronDownIcon
             strokeWidth={2.5}
@@ -99,7 +121,7 @@ function ProfileMenu() {
           return (
             <MenuItem
               key={label}
-              onClick={closeMenu}
+              onClick={isLastItem ? handleSignOut : closeMenu}
               className={`flex items-center gap-2 rounded ${
                 isLastItem
                   ? "hover:bg-red-500/10 focus:bg-red-500/10 active:bg-red-500/10"
@@ -128,6 +150,7 @@ function ProfileMenu() {
 
 const NavbarCompoents = () => {
   const [openNav, setOpenNav] = React.useState(false);
+  const { user } = useContext(AuthProvider);
 
   const handleWindowResize = () =>
     window.innerWidth >= 960 && setOpenNav(false);
@@ -166,7 +189,7 @@ const NavbarCompoents = () => {
             <Bars3Icon className="h-6 w-6" strokeWidth={2} />
           )}
         </IconButton>
-        <ProfileMenu />
+        {user && <ProfileMenu />}
       </div>
       <Collapse open={openNav}>
         <NavList />

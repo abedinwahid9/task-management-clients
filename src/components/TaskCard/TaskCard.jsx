@@ -72,7 +72,7 @@ const TaskCard = ({ task, refetch }) => {
             </h2>
           </div>
           <div className="flex gap-2">
-            <UpdateCard></UpdateCard>
+            <UpdateCard refetch={refetch} task={task}></UpdateCard>
             {/* delete */}
             <Button onClick={handleTaskDelete} color="red">
               <svg
