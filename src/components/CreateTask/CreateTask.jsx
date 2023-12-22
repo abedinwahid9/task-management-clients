@@ -11,23 +11,43 @@ import {
   Option,
   Textarea,
 } from "@material-tailwind/react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import useAxiosPublic from "../PublicAxios/useAxiosPublic";
+import Swal from "sweetalert2";
 
 const CreateTask = () => {
-  const { control, register, handleSubmit } = useForm();
+  const { register, handleSubmit, reset } = useForm();
   const [open, setOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedPriority, setSelectedPriority] = useState(null);
 
   const handleOpen = () => setOpen(!open);
 
-  const onSubmit = (data) => {
-    console.log({
+  const axiosPublic = useAxiosPublic();
+
+  const email = "abedinwahid9@gmail.com";
+  const status = "pending";
+
+  const onSubmit = async (data) => {
+    const addTask = {
       ...data,
+      email,
+      status,
       deadlines: selectedDate.toLocaleDateString("en-GB"),
       priority: selectedPriority,
-    });
-    setOpen(false);
+    };
+    const addPropertiseRes = await axiosPublic.post("/task", addTask);
+    if (addPropertiseRes.data.insertedId) {
+      setOpen(false);
+      reset();
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: `${data.title} is added to the task.`,
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    }
   };
 
   return (
