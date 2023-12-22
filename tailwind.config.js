@@ -7,7 +7,7 @@ module.exports = withMT({
     colors: {
       mainColor: "#5F8670",
       secondColor: "#E3651D",
-      thirdColor: "#607274",
+      thirdColor: "#52b788",
     },
   },
   plugins: [],

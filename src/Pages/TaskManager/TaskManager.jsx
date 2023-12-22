@@ -1,5 +1,6 @@
 import { Button } from "@material-tailwind/react";
 import CreateTask from "../../components/CreateTask/CreateTask";
+import TaskCard from "../../components/TaskCard/TaskCard";
 
 const TaskManager = () => {
   return (
@@ -16,15 +17,26 @@ const TaskManager = () => {
           <CreateTask></CreateTask>
         </div>
       </div>
-      <div className="grid lg:grid-cols-3 md:grid-cols-1 gap-10 items-center w-full mt-10">
-        <div className="bg-thirdColor text-3xl font-bold py-3 p-10 rounded-lg">
-          <h2 className="text-white text-center">To-Do</h2>
+      <div className="grid lg:grid-cols-3 md:grid-cols-1 gap-10  w-full mt-10 px-5">
+        <div className="">
+          <h2 className="text-white text-center bg-thirdColor text-3xl font-bold py-3 p-10 rounded-lg">
+            To-Do
+          </h2>
+          <div>
+            <TaskCard></TaskCard>
+            <TaskCard></TaskCard>
+            <TaskCard></TaskCard>
+          </div>
         </div>
-        <div className="bg-thirdColor text-3xl font-bold py-3 p-10 rounded-lg">
-          <h2 className="text-white text-center">Ongoing</h2>
+        <div className="">
+          <h2 className="text-white text-center bg-thirdColor text-3xl font-bold py-3 p-10 rounded-lg">
+            Ongoing
+          </h2>
         </div>
-        <div className="bg-thirdColor text-3xl font-bold py-3 p-10 rounded-lg">
-          <h2 className="text-white text-center">Complete</h2>
+        <div className="">
+          <h2 className="text-white text-center bg-thirdColor text-3xl font-bold py-3 p-10 rounded-lg">
+            Complete
+          </h2>
         </div>
       </div>
     </div>

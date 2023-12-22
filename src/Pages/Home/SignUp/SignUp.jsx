@@ -10,7 +10,7 @@ import {
 } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
 
-const Login = () => {
+const SignUp = () => {
   return (
     <div className="flex justify-center mt-28">
       <Card className="xl:w-1/2 w-full p-5 bg-transparent shadow-md shadow-thirdColor ">
@@ -20,23 +20,21 @@ const Login = () => {
           className="mb-4 grid h-28 place-items-center bg-thirdColor"
         >
           <Typography variant="h3" color="white">
-            Sign In
+            Sign Up
           </Typography>
         </CardHeader>
         <CardBody className="flex flex-col gap-4">
+          <Input color="white" label="Name" size="lg" />
           <Input color="white" label="Email" size="lg" />
           <Input color="white" label="Password" size="lg" />
-          <div className="-ml-2.5">
-            <Checkbox label="Remember Me" />
-          </div>
         </CardBody>
         <CardFooter className="pt-0">
           <Button className="bg-thirdColor " fullWidth>
             Sign In
           </Button>
           <Typography variant="small" className="mt-6 flex justify-center">
-            Don&apos;t have an account?
-            <Link to="/signup">
+            Already have an account!
+            <Link to="/login">
               <Typography
                 as="a"
                 href="#signup"
@@ -44,28 +42,14 @@ const Login = () => {
                 color="blue-gray"
                 className="ml-1 font-bold"
               >
-                Sign up
+                Sign In
               </Typography>
             </Link>
           </Typography>
-          <div className="flex justify-center">
-            <Button
-              size="lg"
-              variant="outlined"
-              className="flex text-white mt-4 items-center gap-3 bg-secondColor"
-            >
-              <img
-                src="https://docs.material-tailwind.com/icons/google.svg"
-                alt="metamask"
-                className="h-6 w-6"
-              />
-              Continue with Google
-            </Button>
-          </div>
         </CardFooter>
       </Card>
     </div>
   );
 };
 
-export default Login;
+export default SignUp;
