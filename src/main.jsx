@@ -10,6 +10,9 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import Login from "./Pages/Login/Login.jsx";
 import SignUp from "./Pages/Home/SignUp/SignUp.jsx";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
@@ -38,10 +41,12 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <ThemeProvider>
-      <DndProvider backend={HTML5Backend}>
-        <RouterProvider router={router} />
-      </DndProvider>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <DndProvider backend={HTML5Backend}>
+          <RouterProvider router={router} />
+        </DndProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
   </React.StrictMode>
 );

@@ -7,32 +7,74 @@ import {
   Button,
 } from "@material-tailwind/react";
 import UpdateCard from "../UpdateCard/UpdateCard";
+import useAxiosPublic from "../PublicAxios/useAxiosPublic";
+import Swal from "sweetalert2";
 
-const TaskCard = () => {
+const TaskCard = ({ task, refetch }) => {
+  const { _id, title, descriptions, priority, status, deadlines } = task;
+
+  let updateStatus = "ongoing";
+
+  if (status === "pending") {
+    updateStatus = "Ongoning";
+  } else if (status === "ongoing") {
+    updateStatus = "Complete";
+  }
+
+  const axiosPublic = useAxiosPublic();
+
+  const handleTaskDelete = () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axiosPublic.delete(`/tasks/${_id}`).then((res) => {
+          if (res.data.acknowledged) {
+            refetch();
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your file has been deleted.",
+              icon: "success",
+            });
+          }
+        });
+      }
+    });
+  };
+
   return (
     <Card className="mt-6 bg-mainColor">
       <CardBody>
         <div className="flex justify-between items-center">
-          <Typography variant="h5" className="mb-2 text-white">
-            Title
-          </Typography>
-          <Button>complete</Button>
+          <div>
+            <Typography variant="h5" className="mb-2 text-white">
+              {title}
+            </Typography>
+            <p className="mb-2 text-sm text-white">Deadline:{deadlines}</p>
+          </div>
+          <Button className="bg-thirdColor">{updateStatus}</Button>
         </div>
         <div className="mt-5">
-          <Typography className="text-white">Description</Typography>
+          <Typography className="text-white">{descriptions}</Typography>
         </div>
       </CardBody>
       <CardFooter className="pt-0">
         <div className="flex justify-between items-center">
           <div>
             <h2 className="bg-thirdColor px-2 rounded-lg py-1 text-white">
-              priority
+              {priority}
             </h2>
           </div>
           <div className="flex gap-2">
             <UpdateCard></UpdateCard>
-
-            <Button color="red">
+            {/* delete */}
+            <Button onClick={handleTaskDelete} color="red">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"

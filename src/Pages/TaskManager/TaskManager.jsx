@@ -1,8 +1,24 @@
 import { Button } from "@material-tailwind/react";
 import CreateTask from "../../components/CreateTask/CreateTask";
 import TaskCard from "../../components/TaskCard/TaskCard";
+import useAxiosPublic from "../../components/PublicAxios/useAxiosPublic";
+import { useQuery } from "@tanstack/react-query";
 
 const TaskManager = () => {
+  const axiosPublic = useAxiosPublic();
+
+  const {
+    data: tasks = [],
+    isLoading: loading,
+    refetch,
+  } = useQuery({
+    queryKey: ["tasks"],
+    queryFn: async () => {
+      const res = await axiosPublic.get(`/tasks`);
+      return res.data;
+    },
+  });
+
   return (
     <div className="flex justify-center items-center flex-col">
       <h2
@@ -14,7 +30,7 @@ const TaskManager = () => {
       <div className="flex justify-center mt-10 w-3/4">
         <div className="w-full flex justify-between">
           <Button className="text-sm bg-mainColor">Previous Task</Button>
-          <CreateTask></CreateTask>
+          <CreateTask refetch={refetch}></CreateTask>
         </div>
       </div>
       <div className="grid lg:grid-cols-3 md:grid-cols-1 gap-10  w-full mt-10 px-5">
@@ -23,9 +39,11 @@ const TaskManager = () => {
             To-Do
           </h2>
           <div>
-            <TaskCard></TaskCard>
-            <TaskCard></TaskCard>
-            <TaskCard></TaskCard>
+            {tasks.map((task, i) => {
+              return (
+                <TaskCard refetch={refetch} key={i} task={task}></TaskCard>
+              );
+            })}
           </div>
         </div>
         <div className="">

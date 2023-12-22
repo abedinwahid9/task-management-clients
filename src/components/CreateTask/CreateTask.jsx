@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 import useAxiosPublic from "../PublicAxios/useAxiosPublic";
 import Swal from "sweetalert2";
 
-const CreateTask = () => {
+const CreateTask = ({ refetch }) => {
   const { register, handleSubmit, reset } = useForm();
   const [open, setOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
@@ -36,10 +36,13 @@ const CreateTask = () => {
       deadlines: selectedDate.toLocaleDateString("en-GB"),
       priority: selectedPriority,
     };
-    const addPropertiseRes = await axiosPublic.post("/task", addTask);
+    const addPropertiseRes = await axiosPublic.post("/tasks", addTask);
     if (addPropertiseRes.data.insertedId) {
+      refetch();
       setOpen(false);
+
       reset();
+
       Swal.fire({
         position: "top-end",
         icon: "success",
