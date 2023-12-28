@@ -18,20 +18,19 @@ import Swal from "sweetalert2";
 // import useAxiosPublic from "../PublicAxios/useAxiosPublic";
 
 const UpdateCard = ({ task, refetch }) => {
+  const { _id, title, descriptions, priority, status, deadlines } = task;
   const { control, register, handleSubmit, reset } = useForm();
   const [open, setOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(new Date(deadlines));
   const [selectedPriority, setSelectedPriority] = useState(null);
   const axiosPublic = useAxiosPublic();
 
   const handleOpen = () => setOpen(!open);
 
-  const { _id, title, descriptions, priority, status, deadlines } = task;
-
   const onSubmit = async (data) => {
     const updateTask = {
       ...data,
-      deadlines: selectedDate.toLocaleDateString("en-GB"),
+      deadlines: selectedDate,
       priority: selectedPriority,
     };
 

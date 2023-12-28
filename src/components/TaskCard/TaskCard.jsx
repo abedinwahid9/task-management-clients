@@ -9,19 +9,21 @@ import {
 import UpdateCard from "../UpdateCard/UpdateCard";
 import useAxiosPublic from "../PublicAxios/useAxiosPublic";
 import Swal from "sweetalert2";
+import { useDrag } from "react-dnd";
 
 const TaskCard = ({ task, refetch }) => {
   const { _id, title, descriptions, priority, status, deadlines } = task;
-
-  let updateStatus = "ongoing";
-
-  if (status === "pending") {
-    updateStatus = "Ongoning";
-  } else if (status === "ongoing") {
-    updateStatus = "Complete";
-  }
-
   const axiosPublic = useAxiosPublic();
+
+  const deadlinesChange = new Date(deadlines).toLocaleDateString("en-GB");
+
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: `tasks`,
+    item: { id: _id },
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  }));
 
   const handleTaskDelete = () => {
     Swal.fire({
@@ -49,16 +51,21 @@ const TaskCard = ({ task, refetch }) => {
   };
 
   return (
-    <Card className="mt-6 bg-mainColor">
+    <Card
+      ref={drag}
+      className={`mt-6 bg-mainColor ${isDragging ? "opacity-50" : ""}`}
+    >
       <CardBody>
         <div className="flex justify-between items-center">
           <div>
             <Typography variant="h5" className="mb-2 text-white">
               {title}
             </Typography>
-            <p className="mb-2 text-sm text-white">Deadline:{deadlines}</p>
+            <p className="mb-2 text-sm text-white">
+              Deadline:{deadlinesChange}
+            </p>
           </div>
-          <Button className="bg-thirdColor">{updateStatus}</Button>
+          <Button className="bg-thirdColor">{status}</Button>
         </div>
         <div className="mt-5">
           <Typography className="text-white">{descriptions}</Typography>

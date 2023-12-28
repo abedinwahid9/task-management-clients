@@ -26,14 +26,14 @@ const CreateTask = ({ refetch }) => {
   const axiosPublic = useAxiosPublic();
 
   const email = "abedinwahid9@gmail.com";
-  const status = "pending";
+  const status = "todo";
 
   const onSubmit = async (data) => {
     const addTask = {
       ...data,
       email,
       status,
-      deadlines: selectedDate.toLocaleDateString("en-GB"),
+      deadlines: selectedDate,
       priority: selectedPriority,
     };
     const addPropertiseRes = await axiosPublic.post("/tasks", addTask);

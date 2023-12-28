@@ -1,11 +1,17 @@
 import { Button } from "@material-tailwind/react";
 import CreateTask from "../../components/CreateTask/CreateTask";
-import TaskCard from "../../components/TaskCard/TaskCard";
+
 import useAxiosPublic from "../../components/PublicAxios/useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
 
+import { useEffect, useState } from "react";
+import Section from "./Section";
+
 const TaskManager = () => {
   const axiosPublic = useAxiosPublic();
+  const [toDo, setTodo] = useState([]);
+  const [onGoing, setOngoing] = useState([]);
+  const [complete, setComplete] = useState([]);
 
   const {
     data: tasks = [],
@@ -18,6 +24,18 @@ const TaskManager = () => {
       return res.data;
     },
   });
+
+  useEffect(() => {
+    const fTodo = tasks.filter((task) => task.status === "todo");
+    const fOnGoing = tasks.filter((task) => task.status === "ongoing");
+    const fComplete = tasks.filter((task) => task.status === "complete");
+
+    setTodo(fTodo);
+    setOngoing(fOnGoing);
+    setComplete(fComplete);
+  }, [tasks]);
+
+  const statusUses = ["todo", "ongoing", "complete"];
 
   return (
     <div className="flex justify-center items-center flex-col">
@@ -34,28 +52,19 @@ const TaskManager = () => {
         </div>
       </div>
       <div className="grid lg:grid-cols-3 md:grid-cols-1 gap-10  w-full mt-10 px-5">
-        <div className="">
-          <h2 className="text-white text-center bg-thirdColor text-3xl font-bold py-3 p-10 rounded-lg">
-            To-Do
-          </h2>
-          <div>
-            {tasks.map((task, i) => {
-              return (
-                <TaskCard refetch={refetch} key={i} task={task}></TaskCard>
-              );
-            })}
-          </div>
-        </div>
-        <div className="">
-          <h2 className="text-white text-center bg-thirdColor text-3xl font-bold py-3 p-10 rounded-lg">
-            Ongoing
-          </h2>
-        </div>
-        <div className="">
-          <h2 className="text-white text-center bg-thirdColor text-3xl font-bold py-3 p-10 rounded-lg">
-            Complete
-          </h2>
-        </div>
+        {statusUses.map((item, i) => {
+          return (
+            <Section
+              refetch={refetch}
+              key={i}
+              refetch={refetch}
+              item={item}
+              toDo={toDo}
+              onGoing={onGoing}
+              complete={complete}
+            ></Section>
+          );
+        })}
       </div>
     </div>
   );
